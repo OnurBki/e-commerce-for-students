@@ -42,6 +42,6 @@ public class User {
     @Digits(integer = 6, fraction = 2, message = "Balance must be a valid number with at most two decimal places")
     private Float balance = 100.0f; // Default balance is 100.0 (student friendly platform :))
 
-    @NotNull(message = "Admin status is required")
+    @NotBlank(message = "Admin status is required")
     private Boolean isAdmin = false;
 }
