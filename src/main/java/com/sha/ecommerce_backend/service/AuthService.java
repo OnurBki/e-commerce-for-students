@@ -6,7 +6,6 @@ import com.sha.ecommerce_backend.mapper.UserMapper;
 import com.sha.ecommerce_backend.model.User;
 import com.sha.ecommerce_backend.repository.UserRepository;
 import com.sha.ecommerce_backend.security.JwtUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -36,7 +35,8 @@ public class AuthService {
     }
 
     public String login(LoginDto loginDto) {
-        User user = (User) redisTemplate.opsForValue().get(loginDto.getEmail());
+        String cacheKey = "user:email:" + loginDto.getEmail();
+        User user = (User) redisTemplate.opsForValue().get(cacheKey);
         if (user == null) {
             // If user is not in Redis, fetch from database
             user = userRepository.findByEmail(loginDto.getEmail());
@@ -44,7 +44,7 @@ public class AuthService {
                 throw new BadCredentialsException("Wrong email or password");
             }
             // Store user in Redis for future requests
-            redisTemplate.opsForValue().set(loginDto.getEmail(), user, 20, TimeUnit.MINUTES);
+            redisTemplate.opsForValue().set(cacheKey, user, 20, TimeUnit.MINUTES);
         }
 
         Map<String, Object> claims = Map.of(
@@ -56,7 +56,8 @@ public class AuthService {
     }
 
     public String register(CreateUserDto createUserDto) {
-        boolean userExists = userRepository.existByEmail(createUserDto.getEmail());
+        String cacheKey = "user:email:" + createUserDto.getEmail();
+        boolean userExists = userRepository.existByEmail(cacheKey);
         if (userExists) {
             throw new BadCredentialsException("User with this email already exists");
         }
@@ -70,7 +71,7 @@ public class AuthService {
         User user = userMapper.createDtoToUserMapper(createUserDto, userId, hashedPassword);
 
         // Store user in Redis for future requests
-        redisTemplate.opsForValue().set(user.getEmail(), user, 20, TimeUnit.MINUTES);
+        redisTemplate.opsForValue().set(cacheKey, user, 20, TimeUnit.MINUTES);
 
         Map<String, Object> claims = Map.of(
                 "userName", user.getUserName(),

@@ -1,5 +1,6 @@
 package com.sha.ecommerce_backend.controller;
 
+import com.sha.ecommerce_backend.dto.CreateUserDto;
 import com.sha.ecommerce_backend.service.UserService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -51,6 +52,33 @@ public class UserController {
             return ResponseEntity.status(404).body("User not found: " + e.getMessage());
         } catch (Exception e) {
             return ResponseEntity.status(500).body("Error retrieving user: " + e.getMessage());
+        }
+    }
+
+    @PreAuthorize("hasRole('USER')")
+    @PatchMapping("/update")
+    public ResponseEntity<?> updateUser(@RequestBody CreateUserDto userDto,
+                                        @RequestHeader("Authorization") String authHeader) {
+        try {
+            String token = authHeader.substring(7);
+            return ResponseEntity.ok(userService.updateUser(token, userDto));
+        } catch (KeyException e) {
+            return ResponseEntity.status(404).body("User not found: " + e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("Error updating user: " + e.getMessage());
+        }
+    }
+
+    @PreAuthorize("hasRole('USER')")
+    @DeleteMapping("/delete")
+    public ResponseEntity<?> deleteUser(@RequestHeader("Authorization") String authHeader) {
+        try {
+            String token = authHeader.substring(7);
+            return ResponseEntity.ok(userService.deleteUser(token));
+        } catch (KeyException e) {
+            return ResponseEntity.status(404).body("User not found: " + e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("Error deleting user: " + e.getMessage());
         }
     }
 }
