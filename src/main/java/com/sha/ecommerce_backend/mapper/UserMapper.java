@@ -1,5 +1,6 @@
 package com.sha.ecommerce_backend.mapper;
 
+import com.sha.ecommerce_backend.dto.CreateUserDto;
 import com.sha.ecommerce_backend.dto.GetUserDto;
 import com.sha.ecommerce_backend.model.User;
 import org.springframework.jdbc.core.RowMapper;
@@ -8,7 +9,7 @@ import org.springframework.stereotype.Component;
 import java.util.Map;
 
 @Component
-public class UserRowMapper {
+public class UserMapper {
     public RowMapper<User> userRowMapper() {
         return (rs, rowNum) -> {
             User user = new User();
@@ -55,5 +56,17 @@ public class UserRowMapper {
                 "isAdmin", false,
                 "address", user.getAddress()
         );
+    }
+
+    public User createDtoToUserMapper(CreateUserDto createUserDto, String userId, String hashedPassword) {
+        User user = new User();
+        user.setId(userId);
+        user.setUserName(createUserDto.getUserName());
+        user.setHashedPassword(hashedPassword);
+        user.setEmail(createUserDto.getEmail());
+        user.setPhoneNumber(createUserDto.getPhoneNumber());
+        user.setAddress(createUserDto.getAddress());
+        user.setStudentId(createUserDto.getStudentId());
+        return user;
     }
 }

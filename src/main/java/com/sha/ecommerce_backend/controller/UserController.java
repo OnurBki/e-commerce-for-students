@@ -1,6 +1,5 @@
 package com.sha.ecommerce_backend.controller;
 
-import com.sha.ecommerce_backend.dto.CreateUserDto;
 import com.sha.ecommerce_backend.service.UserService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -18,8 +17,8 @@ public class UserController {
         this.userService = userService;
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
-    @GetMapping()
+    //@PreAuthorize("hasRole('ADMIN')")
+    @GetMapping("/")
     public ResponseEntity<?> getAllUsers(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size
@@ -52,16 +51,6 @@ public class UserController {
             return ResponseEntity.status(404).body("User not found: " + e.getMessage());
         } catch (Exception e) {
             return ResponseEntity.status(500).body("Error retrieving user: " + e.getMessage());
-        }
-    }
-
-    @PostMapping("/signup")
-    public ResponseEntity<?> createUser(@RequestBody CreateUserDto userDto) {
-        try {
-            String token = userService.createUser(userDto);
-            return ResponseEntity.ok(Map.of("token", token));
-        } catch (Exception e) {
-            return ResponseEntity.status(500).body("Error creating user: " + e.getMessage());
         }
     }
 }

@@ -67,27 +67,4 @@ public class UserService {
             throw new Exception("An unexpected error occurred: " + e.getMessage());
         }
     }
-
-    public String createUser(CreateUserDto userDto) {
-        try {
-            GetUserDto existingUser = userRepository.findByUsername(userDto.getUserName());
-            if (existingUser != null) {
-                throw new IllegalArgumentException("User with username " + userDto.getUserName() + " already exists.");
-            }
-
-            String userId = userRepository.save(userDto);
-
-            // Generate claims for JWT token
-            Map<String, Object> claims = Map.of(
-                    "userId", userId,
-                    "role", false
-            );
-
-            return jwtUtils.generateToken(userId, claims);
-        } catch (IllegalArgumentException e) {
-            throw new IllegalArgumentException("User creation failed: " + e.getMessage(), e);
-        } catch (Exception e) {
-            throw new RuntimeException("User creation failed: " + e.getMessage(), e);
-        }
-    }
 }
