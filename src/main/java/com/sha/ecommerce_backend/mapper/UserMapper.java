@@ -69,4 +69,18 @@ public class UserMapper {
         user.setStudentId(createUserDto.getStudentId());
         return user;
     }
+
+    public GetUserDto userToGetUserDtoMapper(User user) {
+        GetUserDto getUserDto = new GetUserDto();
+        getUserDto.setId(user.getId());
+        getUserDto.setUserName(user.getUserName());
+        getUserDto.setEmail(user.getEmail());
+        getUserDto.setPhoneNumber(user.getPhoneNumber());
+        getUserDto.setAddress(user.getAddress());
+        getUserDto.setStudentId(user.getStudentId());
+        getUserDto.setReputation(user.getReputation());
+        getUserDto.setBalance(user.getBalance());
+        getUserDto.setAdmin(user.getIsAdmin());
+        return getUserDto;
+    }
 }
