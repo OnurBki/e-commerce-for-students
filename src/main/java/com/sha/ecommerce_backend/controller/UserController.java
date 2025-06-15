@@ -7,7 +7,6 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.KeyException;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/api/users")
@@ -18,7 +17,6 @@ public class UserController {
         this.userService = userService;
     }
 
-    //@PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/")
     public ResponseEntity<?> getAllUsers(
             @RequestParam(defaultValue = "0") int page,

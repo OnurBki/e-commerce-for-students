@@ -153,6 +153,7 @@ public class UserRepository {
         }
     }
 
+    @Transactional
     public GetUserDto update(String userId, CreateUserDto userDto) throws KeyException {
         GetUserDto user = (GetUserDto) redisTemplate.opsForValue().get("user:id:" + userId);
         if (user == null) {
@@ -184,6 +185,7 @@ public class UserRepository {
         return findById(userId);
     }
 
+    @Transactional
     public boolean delete(String userId) {
         GetUserDto user = (GetUserDto) redisTemplate.opsForValue().get("user:id:" + userId);
         if (user == null) {
