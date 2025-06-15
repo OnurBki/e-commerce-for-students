@@ -88,11 +88,11 @@ public class ItemRepository {
         String sql = """
             INSERT INTO item (
                 item_id, title, description, category, starting_price, current_price,
-                buyout_price, condition, status, auction_start_time, auction_end_time, user_id
+                buyout_price, condition, status, auction_start_time, auction_end_time, user_id, owner_id
             )
             SELECT
                 :itemId, :title, :description, :category, :startingPrice, :currentPrice,
-                :buyoutPrice, :condition, 0, :auctionStartTime, :auctionEndTime, :sellerId
+                :buyoutPrice, :condition, 0, :auctionStartTime, :auctionEndTime, :sellerId, :ownerId
             WHERE (
                 SELECT COUNT(*) FROM item WHERE user_id = :sellerId AND status = 0
             ) < 10

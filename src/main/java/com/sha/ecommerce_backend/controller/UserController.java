@@ -68,6 +68,21 @@ public class UserController {
     }
 
     @PreAuthorize("hasRole('USER')")
+    @PatchMapping("/add-balance/{amount}")
+    public ResponseEntity<?> addBalance(@PathVariable float amount,
+                                        @RequestHeader("Authorization") String authHeader) {
+        try {
+            String token = authHeader.substring(7);
+            userService.addBalance(token, amount);
+            return ResponseEntity.ok("Balance added successfully");
+        } catch (KeyException e) {
+            return ResponseEntity.status(404).body("User not found: " + e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("Error adding balance: " + e.getMessage());
+        }
+    }
+
+    @PreAuthorize("hasRole('USER')")
     @DeleteMapping("/delete")
     public ResponseEntity<?> deleteUser(@RequestHeader("Authorization") String authHeader) {
         try {

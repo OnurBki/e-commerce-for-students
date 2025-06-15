@@ -16,4 +16,5 @@ public class GetItemDto {
     private String auctionStartTime;
     private String auctionEndTime;
     private String sellerId;
+    private String ownerId;
 }

@@ -81,6 +81,17 @@ public class UserService {
         }
     }
 
+    public void addBalance(String token, float amount) throws KeyException {
+        try {
+            String userId = jwtUtils.extractUserId(token);
+            userRepository.addBalance(userId, amount);
+        } catch (KeyException e) {
+            throw new KeyException("Error adding balance: " + e.getMessage());
+        } catch (Exception e) {
+            throw new RuntimeException("Error adding balance: " + e.getMessage());
+        }
+    }
+
     public boolean deleteUser(String token) throws KeyException {
         try {
             String userId = jwtUtils.extractUserId(token);

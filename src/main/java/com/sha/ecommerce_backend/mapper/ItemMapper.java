@@ -26,6 +26,7 @@ public class ItemMapper {
             item.setAuctionStartTime(rs.getString("auction_start_time"));
             item.setAuctionEndTime(rs.getString("auction_end_time"));
             item.setSellerId(rs.getString("user_id"));
+            item.setOwnerId(rs.getString("owner_id"));
             return item;
         };
     }
@@ -44,6 +45,7 @@ public class ItemMapper {
         params.put("auctionStartTime", item.getAuctionStartTime());
         params.put("auctionEndTime", item.getAuctionEndTime());
         params.put("sellerId", item.getSellerId());
+        params.put("ownerId", item.getSellerId());
         return params;
     }
 }

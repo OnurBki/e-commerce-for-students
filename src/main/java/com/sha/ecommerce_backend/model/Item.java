@@ -63,4 +63,7 @@ public class Item {
     @NotBlank(message = "Seller ID is required")
     @Size(max = 255, message = "Seller ID must be at most 255 characters long")
     private String sellerId;
+
+    @Size(max = 255, message = "Seller ID must be at most 255 characters long")
+    private String ownerId;
 }
