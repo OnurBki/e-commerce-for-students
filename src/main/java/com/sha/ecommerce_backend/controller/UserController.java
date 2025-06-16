@@ -7,7 +7,6 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.KeyException;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/api/users")
@@ -18,7 +17,6 @@ public class UserController {
         this.userService = userService;
     }
 
-    //@PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/")
     public ResponseEntity<?> getAllUsers(
             @RequestParam(defaultValue = "0") int page,
@@ -66,6 +64,21 @@ public class UserController {
             return ResponseEntity.status(404).body("User not found: " + e.getMessage());
         } catch (Exception e) {
             return ResponseEntity.status(500).body("Error updating user: " + e.getMessage());
+        }
+    }
+
+    @PreAuthorize("hasRole('USER')")
+    @PatchMapping("/add-balance/{amount}")
+    public ResponseEntity<?> addBalance(@PathVariable float amount,
+                                        @RequestHeader("Authorization") String authHeader) {
+        try {
+            String token = authHeader.substring(7);
+            userService.addBalance(token, amount);
+            return ResponseEntity.ok("Balance added successfully");
+        } catch (KeyException e) {
+            return ResponseEntity.status(404).body("User not found: " + e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("Error adding balance: " + e.getMessage());
         }
     }
 

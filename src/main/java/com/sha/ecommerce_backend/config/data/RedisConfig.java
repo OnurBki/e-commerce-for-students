@@ -1,5 +1,7 @@
 package com.sha.ecommerce_backend.config.data;
 
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -25,6 +27,9 @@ public class RedisConfig {
                         .build(),
                 ObjectMapper.DefaultTyping.NON_FINAL
         );
+        mapper.registerModule(new JavaTimeModule());
+        mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+        
 
         // Use Jackson2JsonRedisSerializer with specific type info
         Jackson2JsonRedisSerializer<Object> serializer = new Jackson2JsonRedisSerializer<>(mapper, Object.class);

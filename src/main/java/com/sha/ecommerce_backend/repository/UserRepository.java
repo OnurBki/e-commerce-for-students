@@ -153,6 +153,7 @@ public class UserRepository {
         }
     }
 
+    @Transactional
     public GetUserDto update(String userId, CreateUserDto userDto) throws KeyException {
         GetUserDto user = (GetUserDto) redisTemplate.opsForValue().get("user:id:" + userId);
         if (user == null) {
@@ -184,6 +185,28 @@ public class UserRepository {
         return findById(userId);
     }
 
+    public void addBalance(String userId, float amount) throws KeyException {
+        GetUserDto user = (GetUserDto) redisTemplate.opsForValue().get("user:id:" + userId);
+        if (user == null) {
+            user = findById(userId);
+            if (user == null) {
+                throw new KeyException("User not found with id: " + userId);
+            }
+        }
+
+        String sql = "UPDATE \"user\" SET balance = balance + :amount WHERE user_id = :userId";
+        Map<String, Object> params = Map.of("amount", amount, "userId", userId);
+
+        int rowsAffected = namedParameterJdbcTemplate.update(sql, params);
+        if (rowsAffected != 1) {
+            throw new RuntimeException("Failed to add balance: no rows affected");
+        }
+
+        // Update the cached user object
+        redisTemplate.opsForValue().set("user:id:" + userId, user, 20, TimeUnit.MINUTES);
+    }
+
+    @Transactional
     public boolean delete(String userId) {
         GetUserDto user = (GetUserDto) redisTemplate.opsForValue().get("user:id:" + userId);
         if (user == null) {

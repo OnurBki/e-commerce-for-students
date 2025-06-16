@@ -37,8 +37,8 @@ public class User {
     private Float reputation = 0.0f; // Default reputation is 0.0
 
     @NotBlank(message = "Balance is required")
-    @Min(value = 0, message = "Balance must be at least 0")
-    @Max(value = 999999, message = "Balance must be at most 999999")
+    @DecimalMin(value = "0.0", message = "Balance must be at least 0.00")
+    @DecimalMax(value = "999999.99", message = "Balance must be at most 999999.99")
     @Digits(integer = 6, fraction = 2, message = "Balance must be a valid number with at most two decimal places")
     private Float balance = 100.0f; // Default balance is 100.0 (student friendly platform :))
 
