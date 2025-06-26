@@ -70,17 +70,17 @@ public class UserMapper {
         return user;
     }
 
-    public GetUserDto userToGetUserDtoMapper(User user) {
-        GetUserDto getUserDto = new GetUserDto();
-        getUserDto.setId(user.getId());
-        getUserDto.setUserName(user.getUserName());
-        getUserDto.setEmail(user.getEmail());
-        getUserDto.setPhoneNumber(user.getPhoneNumber());
-        getUserDto.setAddress(user.getAddress());
-        getUserDto.setStudentId(user.getStudentId());
-        getUserDto.setReputation(user.getReputation());
-        getUserDto.setBalance(user.getBalance());
-        getUserDto.setAdmin(user.getIsAdmin());
-        return getUserDto;
+    public GetUserDto createDtoToGetUserDtoMapper(CreateUserDto createUserDto, String userId, Float reputation, Float balance) {
+        GetUserDto user = new GetUserDto();
+        user.setId(userId);
+        user.setUserName(createUserDto.getUserName());
+        user.setEmail(createUserDto.getEmail());
+        user.setPhoneNumber(createUserDto.getPhoneNumber());
+        user.setAddress(createUserDto.getAddress());
+        user.setStudentId(createUserDto.getStudentId());
+        user.setReputation(reputation);
+        user.setBalance(balance);
+        user.setAdmin(false);
+        return user;
     }
 }

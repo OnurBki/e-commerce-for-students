@@ -110,7 +110,6 @@ public class ItemRepository {
             });
 
             if (insertedItemId != null) {
-                redisTemplate.opsForValue().set("item:" + insertedItemId, createItemDto, 20, TimeUnit.MINUTES);
                 return insertedItemId;
             } else {
                 throw new RuntimeException("Item creation failed: user already has 10 active items.");

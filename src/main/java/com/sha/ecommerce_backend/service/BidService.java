@@ -52,7 +52,7 @@ public class BidService {
         }
     }
 
-    @Scheduled(fixedRate = 10000) // Runs every 10 seconds
+    @Scheduled(fixedRate = 5000) // Runs every 5 seconds
     public void finalizeAuctions() {
         try {
             bidRepository.finalizeAuctions();

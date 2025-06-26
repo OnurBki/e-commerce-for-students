@@ -3,7 +3,6 @@ package com.sha.ecommerce_backend.controller;
 import com.sha.ecommerce_backend.dto.CreateUserDto;
 import com.sha.ecommerce_backend.dto.LoginDto;
 import com.sha.ecommerce_backend.service.AuthService;
-import com.sha.ecommerce_backend.service.UserService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.annotation.PostMapping;

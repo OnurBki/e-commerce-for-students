@@ -31,7 +31,6 @@ public class AchievementController {
         }
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/create")
     public ResponseEntity<?> createAchievement(@RequestBody CreateAchievementDto createAchievementDto) {
         try {
@@ -42,7 +41,6 @@ public class AchievementController {
         }
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/update/{achievementId}")
     public ResponseEntity<?> updateAchievement(@PathVariable String achievementId, @RequestBody CreateAchievementDto createAchievementDto) {
         try {
@@ -53,7 +51,6 @@ public class AchievementController {
         }
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/delete/{achievementId}")
     public ResponseEntity<?> deleteAchievement(@PathVariable String achievementId) {
         try {

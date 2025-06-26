@@ -43,45 +43,21 @@ public class UserRepository {
     }
 
     public User findByUsernameUserDetails(String userName) {
-        String cacheKey = "user:username:" + userName;
-        User user = (User) redisTemplate.opsForValue().get(cacheKey);
-        if (user != null) {
-            return user;
-        }
-
         String sql = "SELECT * FROM \"user\" WHERE user_name = :userName";
         Map<String, Object> params = Map.of("userName", userName);
 
         List<User> users = namedParameterJdbcTemplate.query(sql, params, userMapper.userRowMapper());
 
-        user = users.isEmpty() ? null : users.get(0);
-
-        if (user != null) {
-            redisTemplate.opsForValue().set(cacheKey, user, 20, TimeUnit.MINUTES);
-        }
-
-        return user;
+        return users.isEmpty() ? null : users.get(0);
     }
 
     public GetUserDto findByUsername(String userName) {
-        String cacheKey = "user:username" + userName;
-        GetUserDto user = (GetUserDto) redisTemplate.opsForValue().get(cacheKey);
-        if (user != null) {
-            return user;
-        }
-
         String sql = "SELECT * FROM \"user\" WHERE user_name = :userName";
         Map<String, Object> params = Map.of("userName", userName);
 
         List<GetUserDto> users = namedParameterJdbcTemplate.query(sql, params, userMapper.getUserDtoRowMapper());
 
-        user = users.isEmpty() ? null : users.get(0);
-
-        if (user != null) {
-            redisTemplate.opsForValue().set(cacheKey, user, 20, TimeUnit.MINUTES);
-        }
-
-        return user;
+        return users.isEmpty() ? null : users.get(0);
     }
 
     public GetUserDto findById(String id) {
@@ -110,15 +86,8 @@ public class UserRepository {
         Map<String, Object> params = Map.of("email", email);
 
         List<User> users = namedParameterJdbcTemplate.query(sql, params, userMapper.userRowMapper());
-        User user = users.isEmpty() ? null : users.get(0);
 
-        String cacheKey = "user:email:" + email;
-        if (user != null) {
-            GetUserDto userDto = userMapper.userToGetUserDtoMapper(user);
-            redisTemplate.opsForValue().set(cacheKey, userDto, 20, TimeUnit.MINUTES);
-        }
-
-        return user;
+        return users.isEmpty() ? null : users.get(0);
     }
 
     @Transactional
@@ -173,9 +142,8 @@ public class UserRepository {
                 "userId", userId
         );
 
+        user = userMapper.createDtoToGetUserDtoMapper(userDto, userId, user.getReputation(), user.getBalance());
         redisTemplate.opsForValue().set("user:id:" + userId, user, 20, TimeUnit.MINUTES);
-        redisTemplate.delete("user:email:" + user.getEmail());
-        redisTemplate.delete("user:username:" + user.getUserName());
 
         int rowsAffected = namedParameterJdbcTemplate.update(sql, params);
         if (rowsAffected != 1) {
@@ -203,6 +171,7 @@ public class UserRepository {
         }
 
         // Update the cached user object
+        user.setBalance(user.getBalance() + amount);
         redisTemplate.opsForValue().set("user:id:" + userId, user, 20, TimeUnit.MINUTES);
     }
 
