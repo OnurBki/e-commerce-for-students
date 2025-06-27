@@ -3,6 +3,7 @@ package com.sha.ecommerce_backend.service;
 import com.sha.ecommerce_backend.dto.CreateAchievementDto;
 import com.sha.ecommerce_backend.dto.GetAchievementDto;
 import com.sha.ecommerce_backend.repository.AchievementRepository;
+import com.sha.ecommerce_backend.security.JwtUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -11,12 +12,23 @@ import java.util.List;
 @Service
 public class AchievementService {
     @Autowired private AchievementRepository achievementRepository;
+    @Autowired private JwtUtils jwtUtils;
 
     public List<GetAchievementDto> getAllAchievements() {
         try {
             return achievementRepository.getAllAchievements();
         } catch (Exception e) {
             throw new RuntimeException("Failed to retrieve achievements: " + e.getMessage(), e);
+        }
+    }
+
+    public List<GetAchievementDto> getAchievementsByUserId(String token) {
+        String userId = null;
+        try {
+            userId = jwtUtils.extractUserId(token);
+            return achievementRepository.getAchievementsByUserId(userId);
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to retrieve achievements for user ID " + userId + ": " + e.getMessage(), e);
         }
     }
 

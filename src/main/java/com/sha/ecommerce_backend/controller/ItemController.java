@@ -91,6 +91,34 @@ public class ItemController {
         }
     }
 
+    @GetMapping("by-seller")
+    public ResponseEntity<?> getItemsBySellerId(
+            @RequestParam(name = "offset", defaultValue = "0") int offset,
+            @RequestParam(name = "limit", defaultValue = "10") int limit,
+            @RequestHeader("Authorization") String authHeader
+    ) {
+        try {
+            String token = authHeader.substring(7);
+            return ResponseEntity.ok(itemService.getItemsBySellerId(token, offset, limit));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("Error fetching items by seller ID: " + e.getMessage());
+        }
+    }
+
+    @GetMapping("by-owner")
+    public ResponseEntity<?> getItemsByOwnerId(
+            @RequestParam(name = "offset", defaultValue = "0") int offset,
+            @RequestParam(name = "limit", defaultValue = "10") int limit,
+            @RequestHeader("Authorization") String authHeader
+    ) {
+        try {
+            String token = authHeader.substring(7);
+            return ResponseEntity.ok(itemService.getItemsByOwnerId(token, offset, limit));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("Error fetching items by owner ID: " + e.getMessage());
+        }
+    }
+
     @GetMapping("id/{itemId}")
     public ResponseEntity<?> getItemById(@PathVariable String itemId) {
         try {

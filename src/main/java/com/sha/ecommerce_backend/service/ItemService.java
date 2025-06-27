@@ -33,6 +33,16 @@ public class ItemService {
         };
     }
 
+    public List<GetItemDto> getItemsBySellerId(String token, int offset, int limit) {
+        String sellerId = jwtUtils.extractUserId(token);
+        return itemRepository.findAllBySellerId(sellerId, offset, limit);
+    }
+
+    public List<GetItemDto> getItemsByOwnerId(String token, int offset, int limit) {
+        String ownerId = jwtUtils.extractUserId(token);
+        return itemRepository.findAllByOwnerId(ownerId, offset, limit);
+    }
+
     public GetItemDto getItemById(String itemId) {
         GetItemDto item = itemRepository.findById(itemId);
         if (item == null) {

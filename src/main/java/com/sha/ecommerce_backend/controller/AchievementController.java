@@ -22,6 +22,16 @@ public class AchievementController {
         }
     }
 
+    @GetMapping("/user/{userId}")
+    public ResponseEntity<?> getAchievementsByUserId(@RequestHeader("Authorization") String authHeader) {
+        try {
+            String token = authHeader.substring(7);
+            return ResponseEntity.ok(achievementService.getAchievementsByUserId(token));
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("Failed to retrieve achievements for user");
+        }
+    }
+
     @GetMapping("/id/{achievementId}")
     public ResponseEntity<?> getAchievementById(@PathVariable String achievementId) {
         try {

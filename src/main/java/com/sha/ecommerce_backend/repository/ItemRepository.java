@@ -57,6 +57,18 @@ public class ItemRepository {
         return namedParameterJdbcTemplate.query(sql, params, itemMapper.getItemDtoRowMapper());
     }
 
+    public List<GetItemDto> findAllBySellerId(String sellerId, int offset, int limit) {
+        String sql = "SELECT * FROM item WHERE user_id = :sellerId ORDER BY auction_start_time DESC LIMIT :limit OFFSET :offset";
+        Map<String, Object> params = Map.of("sellerId", sellerId, "limit", limit, "offset", offset);
+        return namedParameterJdbcTemplate.query(sql, params, itemMapper.getItemDtoRowMapper());
+    }
+
+    public List<GetItemDto> findAllByOwnerId(String ownerId, int offset, int limit) {
+        String sql = "SELECT * FROM item WHERE owner_id = :ownerId ORDER BY auction_start_time DESC LIMIT :limit OFFSET :offset";
+        Map<String, Object> params = Map.of("ownerId", ownerId, "limit", limit, "offset", offset);
+        return namedParameterJdbcTemplate.query(sql, params, itemMapper.getItemDtoRowMapper());
+    }
+
     public GetItemDto findById(String itemId) {
         String cacheKey = "item:" + itemId;
         GetItemDto item = (GetItemDto) redisTemplate.opsForValue().get(cacheKey);

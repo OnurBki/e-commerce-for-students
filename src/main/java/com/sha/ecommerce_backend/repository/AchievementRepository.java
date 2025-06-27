@@ -21,6 +21,14 @@ public class AchievementRepository {
         return namedParameterJdbcTemplate.query(sql, Map.of(), achievementMapper.getAchievementRowMapper());
     }
 
+    public List<GetAchievementDto> getAchievementsByUserId(String userId) {
+        String sql = "SELECT a.* FROM achievement a " +
+                "JOIN user_achievement ua ON a.achievement_id = ua.achievement_id " +
+                "WHERE ua.user_id = :userId";
+        Map<String, Object> params = Map.of("userId", userId);
+        return namedParameterJdbcTemplate.query(sql, params, achievementMapper.getAchievementRowMapper());
+    }
+
     public GetAchievementDto getAchievementById(String achievementId) {
         String sql = "SELECT * FROM achievement WHERE achievement_id = :achievementId";
         Map<String, Object> params = Map.of("achievementId", achievementId);
