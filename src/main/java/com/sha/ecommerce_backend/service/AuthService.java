@@ -35,16 +35,9 @@ public class AuthService {
     }
 
     public String login(LoginDto loginDto) {
-        String cacheKey = "user:email:" + loginDto.getEmail();
-        User user = (User) redisTemplate.opsForValue().get(cacheKey);
-        if (user == null) {
-            // If user is not in Redis, fetch from database
-            user = userRepository.findByEmail(loginDto.getEmail());
-            if (user == null || !passwordEncoder.matches(loginDto.getPassword(), user.getHashedPassword())) {
-                throw new BadCredentialsException("Wrong email or password");
-            }
-            // Store user in Redis for future requests
-            redisTemplate.opsForValue().set(cacheKey, user, 20, TimeUnit.MINUTES);
+        User user = userRepository.findByEmail(loginDto.getEmail());
+        if (user == null || !passwordEncoder.matches(loginDto.getPassword(), user.getHashedPassword())) {
+            throw new BadCredentialsException("Wrong email or password");
         }
 
         Map<String, Object> claims = Map.of(
@@ -56,8 +49,7 @@ public class AuthService {
     }
 
     public String register(CreateUserDto createUserDto) {
-        String cacheKey = "user:email:" + createUserDto.getEmail();
-        boolean userExists = userRepository.existByEmail(cacheKey);
+        boolean userExists = userRepository.existByEmail(createUserDto.getEmail());
         if (userExists) {
             throw new BadCredentialsException("User with this email already exists");
         }
@@ -69,9 +61,6 @@ public class AuthService {
         String userId = userRepository.save(createUserDto);
         String hashedPassword = passwordEncoder.encode(createUserDto.getPassword());
         User user = userMapper.createDtoToUserMapper(createUserDto, userId, hashedPassword);
-
-        // Store user in Redis for future requests
-        redisTemplate.opsForValue().set(cacheKey, user, 20, TimeUnit.MINUTES);
 
         Map<String, Object> claims = Map.of(
                 "userName", user.getUserName(),

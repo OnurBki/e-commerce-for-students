@@ -4,8 +4,6 @@ import com.sha.ecommerce_backend.dto.CreateUserDto;
 import com.sha.ecommerce_backend.dto.GetUserDto;
 import com.sha.ecommerce_backend.repository.UserRepository;
 import com.sha.ecommerce_backend.security.JwtUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
 import java.security.KeyException;

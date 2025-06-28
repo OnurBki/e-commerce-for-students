@@ -1,4 +1,4 @@
-package com.sha.ecommerce_backend.config.data;
+package com.sha.ecommerce_backend.config;
 
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;

@@ -97,6 +97,10 @@ public class ItemRepository {
             itemId = StringGenerator.generateRandomString(255);
         }
 
+        if (createItemDto.getBuyoutPrice() <= createItemDto.getStartingPrice()) {
+            throw new IllegalArgumentException("Buyout price must be greater than starting price.");
+        }
+
         String sql = """
             INSERT INTO item (
                 item_id, title, description, category, starting_price, current_price,

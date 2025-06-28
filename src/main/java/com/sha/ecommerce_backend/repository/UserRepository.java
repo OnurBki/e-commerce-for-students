@@ -107,7 +107,7 @@ public class UserRepository {
                 "VALUES (:userId, :userName, :hashedPassword, :email, :phoneNumber, :studentId, :reputation, :balance, :isAdmin, :address)";
         Map<String, Object> params = userMapper.createUserMapper(user);
 
-        redisTemplate.opsForValue().set("user:email:" + user.getEmail(), user, 20, TimeUnit.MINUTES);
+        redisTemplate.opsForValue().set("user:id:" + userId, user, 20, TimeUnit.MINUTES);
 
         try {
             int rowsAffected = namedParameterJdbcTemplate.update(sql, params);
@@ -192,8 +192,6 @@ public class UserRepository {
 
         if (rowsAffected > 0) {
             redisTemplate.delete("user:id:" + userId);
-            redisTemplate.delete("user:email:" + user.getEmail());
-            redisTemplate.delete("user:username:" + user.getUserName());
         }
 
         return rowsAffected == 1;
@@ -206,11 +204,6 @@ public class UserRepository {
     }
 
     public boolean existByUsername(String userName) {
-        User user = (User) redisTemplate.opsForValue().get("user:username:" + userName);
-        if (user != null) {
-            return true;
-        }
-
         String sql = "SELECT COUNT(*) FROM \"user\" WHERE user_name = :userName";
         Map<String, Object> params = Map.of("userName", userName);
         Integer count = namedParameterJdbcTemplate.queryForObject(sql, params, Integer.class);
@@ -218,11 +211,6 @@ public class UserRepository {
     }
 
     public boolean existByEmail(String email) {
-        User user = (User) redisTemplate.opsForValue().get("user:email:" + email);
-        if (user != null) {
-            return true;
-        }
-
         String sql = "SELECT COUNT(*) FROM \"user\" WHERE email = :email";
         Map<String, Object> params = Map.of("email", email);
         Integer count = namedParameterJdbcTemplate.queryForObject(sql, params, Integer.class);
