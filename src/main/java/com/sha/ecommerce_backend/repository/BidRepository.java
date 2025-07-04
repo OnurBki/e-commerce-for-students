@@ -12,6 +12,7 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
@@ -161,5 +162,24 @@ public class BidRepository {
         Map<String, Object> params = Map.of("bidId", bidId);
         Integer count = namedParameterJdbcTemplate.queryForObject(sql, params, Integer.class);
         return count != null && count > 0;
+    }
+
+    public List<Map<String, Object>> getAllBidsForReports() {
+        String sql = """
+            SELECT
+                bid_id, bid_amount, bid_time, item_id, user_id
+            FROM bid
+            ORDER BY bid_time DESC
+        """;
+        
+        return namedParameterJdbcTemplate.query(sql, (rs, rowNum) -> {
+            Map<String, Object> bid = new HashMap<>();
+            bid.put("bidId", rs.getString("bid_id"));
+            bid.put("bidAmount", rs.getFloat("bid_amount"));
+            bid.put("bidTime", rs.getTimestamp("bid_time"));
+            bid.put("itemId", rs.getString("item_id"));
+            bid.put("bidderId", rs.getString("user_id"));
+            return bid;
+        });
     }
 }

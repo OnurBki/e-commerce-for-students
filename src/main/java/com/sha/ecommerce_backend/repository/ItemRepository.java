@@ -10,6 +10,7 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
@@ -211,5 +212,31 @@ public class ItemRepository {
         Map<String, Object> params = Map.of("itemId", itemId);
         Integer count = namedParameterJdbcTemplate.queryForObject(sql, params, Integer.class);
         return count != null && count > 0;
+    }
+
+    public List<Map<String, Object>> getAllItemsForReports() {
+        String sql = """
+            SELECT
+                item_id, title, category, status, starting_price, current_price,
+                buyout_price, auction_start_time, auction_end_time, user_id, owner_id
+            FROM item
+            ORDER BY auction_start_time DESC
+        """;
+        
+        return namedParameterJdbcTemplate.query(sql, (rs, rowNum) -> {
+            Map<String, Object> item = new HashMap<>();
+            item.put("itemId", rs.getString("item_id"));
+            item.put("title", rs.getString("title"));
+            item.put("category", rs.getString("category"));
+            item.put("status", rs.getString("status"));
+            item.put("startingPrice", rs.getFloat("starting_price"));
+            item.put("currentPrice", rs.getFloat("current_price"));
+            item.put("buyoutPrice", rs.getFloat("buyout_price"));
+            item.put("auctionStartTime", rs.getTimestamp("auction_start_time"));
+            item.put("auctionEndTime", rs.getTimestamp("auction_end_time"));
+            item.put("sellerId", rs.getString("user_id"));
+            item.put("ownerId", rs.getString("owner_id"));
+            return item;
+        });
     }
 }
